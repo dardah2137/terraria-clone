@@ -50,25 +50,34 @@ void Game::Run() {
 		WIDTH,
 		HEIGHT,
 		0);
+	if (!_window) {
+		std::cout << SDL_GetError() << std::endl;
+		return;
+	}
 	_renderer = SDL_CreateRenderer(_window,
 		-1,
 		SDL_RENDERER_TARGETTEXTURE || SDL_RENDERER_PRESENTVSYNC || SDL_RENDERER_ACCELERATED);
 
+	if (!_renderer) {
+		std::cout << SDL_GetError() << std::endl;
+		return;
+	}
+
 	LoadTextures();
 
-	SDL_Rect cube{};
-	cube.x = 320;
-	cube.y = 480;
-	cube.w = 32;
-	cube.h = 32;
+	SDL_Rect rectangle{};
+	rectangle.x = 320;
+	rectangle.y = 480;
+	rectangle.w = 32;
+	rectangle.h = 32;
 
 	for (std::pair<BLOCKTYPE, SDL_Texture*> n : _block_textures) {
 		for (int i = 0; i <= 10; ++i) {
-			SDL_RenderCopy(_renderer, n.second, NULL, &cube);
-			cube.x += 32;
+			SDL_RenderCopy(_renderer, n.second, NULL, &rectangle);
+			rectangle.x += 32;
 		}
-		cube.x = 320;
-		cube.y += 32;
+		rectangle.x = 320;
+		rectangle.y += 32;
 	}
 	SDL_RenderPresent(_renderer);
 
@@ -76,7 +85,7 @@ void Game::Run() {
 	SDL_Event ev{};
 
 	//main game loop
-	std::cout << SDL_GetError();
+
 	while (!quit) {
 		SDL_PollEvent(&ev);
 		switch (ev.type) {
