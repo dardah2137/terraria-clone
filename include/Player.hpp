@@ -5,13 +5,11 @@
 class Player {
 public:
 	Player(SDL_Texture* sprite);
-	void move(int x, int y);
-	void setPos(int x, int y);
-	int getX();
-	int getY();
+	void move(float x, float y);
+	void setPos(float x, float y);
+	float getX();
+	float getY();
 	SDL_Texture* sprite;
-	SDL_Rect* getRectPos();
 private:
-	SDL_Rect rectPos{};
-	int x{}, y{32};
+	float x{}, y{1};
 };

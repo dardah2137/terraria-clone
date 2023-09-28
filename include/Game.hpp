@@ -13,6 +13,7 @@ public:
 	void Run();
 private:
 	void LoadTextures();
+
 	SDL_Window* _window{};
 	SDL_Renderer* _renderer{};
 	std::unordered_map<BLOCKTYPE, SDL_Texture*> _block_textures{};
