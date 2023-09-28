@@ -12,7 +12,7 @@ find_package(SDL2_image REQUIRED)
 
 include_directories(include/)
 
-add_executable(${PROJECT_NAME} "src/main.cpp" "src/Game.cpp"   "src/Block.cpp")
+add_executable(${PROJECT_NAME} "src/main.cpp" "src/Game.cpp"   "src/Block.cpp" "src/World.cpp" "src/Renderer.cpp" "src/Player.cpp")
 
 add_custom_target(copy_assets
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets

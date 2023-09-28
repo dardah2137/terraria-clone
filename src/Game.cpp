@@ -1,9 +1,13 @@
 #include "Game.hpp"
+
 #include "Block.hpp"
+#include "Renderer.hpp"
+
 #include <iostream>
 #include <SDL_image.h>
-constexpr unsigned short WIDTH{ 1280 };
-constexpr unsigned short HEIGHT{ 720 };
+
+extern const unsigned short SCREEN_WIDTH{ 1280 };
+extern const unsigned short SCREEN_HEIGHT{ 720 };
 
 void Game::LoadTextures() {
 	SDL_Texture* block = IMG_LoadTexture(_renderer, "assets/blocks.png");
@@ -26,8 +30,6 @@ void Game::LoadTextures() {
 		tmpoffset.x += 32;
 
 		SDL_SetRenderTarget(_renderer, NULL);
-
-		temp = nullptr;
 	}
 
 	block = nullptr;
@@ -47,8 +49,8 @@ void Game::Run() {
 	_window = SDL_CreateWindow("Dadoraria",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		WIDTH,
-		HEIGHT,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
 		0);
 	if (!_window) {
 		std::cout << SDL_GetError() << std::endl;
@@ -64,28 +66,16 @@ void Game::Run() {
 	}
 
 	LoadTextures();
+	World world;
+	Player player(IMG_LoadTexture(_renderer, "assets/pudzion.png"));
+	Renderer renderer(_renderer, &world, _block_textures, &player);
 
-	SDL_Rect rectangle{};
-	rectangle.x = 320;
-	rectangle.y = 480;
-	rectangle.w = 32;
-	rectangle.h = 32;
-
-	for (std::pair<BLOCKTYPE, SDL_Texture*> n : _block_textures) {
-		for (int i = 0; i <= 10; ++i) {
-			SDL_RenderCopy(_renderer, n.second, NULL, &rectangle);
-			rectangle.x += 32;
-		}
-		rectangle.x = 320;
-		rectangle.y += 32;
-	}
-	SDL_RenderPresent(_renderer);
-
+	world.addBlock(Location{0,0}, GRASS, true);
+	
+	const Uint8* keystates = SDL_GetKeyboardState(NULL);
 	bool quit = false;
 	SDL_Event ev{};
-
 	//main game loop
-
 	while (!quit) {
 		SDL_PollEvent(&ev);
 		switch (ev.type) {
@@ -93,9 +83,18 @@ void Game::Run() {
 		case SDL_QUIT:
 			quit = true;
 			break;
-
 		default:
 			break;
 		}
+
+		if (keystates[SDL_SCANCODE_D]) { player.move(-1, 0); }
+		if (keystates[SDL_SCANCODE_A]) { player.move( 1, 0); }
+		if (keystates[SDL_SCANCODE_W]) { player.move( 0, 1); }
+		if (keystates[SDL_SCANCODE_S]) { player.move(0, -1); }
+		std::cout << player.getX() << std::endl;
+
+		renderer.RenderFrame();
+
+
 	}
 }
