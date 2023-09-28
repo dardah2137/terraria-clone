@@ -89,13 +89,7 @@ void Player::handleVelY()
 {
 	int moduloY = (int)y % 32;
 	int moduloX = (int)x % 32;
-	if (moduloY % 32 == 1) {
-		if (!checkCollisionAt(x, y - 1)) {
-			y -= 1;
-			return;
-		}
-	}
-	else if (moduloY % 32 == 0) {
+	if (moduloY % 32 == 0) {
 		if (checkCollisionAt(std::ceil(x) / 32, (y - 32) / 32))
 		{
 			return;
