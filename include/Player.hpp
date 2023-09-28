@@ -31,9 +31,6 @@ private:
 	//enter as screen coordinates
 	bool checkCollisionAt(int x, int y);
 
-	DIRECTION direction_vertical;
-	DIRECTION direction_horizontal;
-
 	World* _pWorld{};
 	float _gravity{};
 	float x{}, y{1};

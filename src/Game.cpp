@@ -107,7 +107,6 @@ void Game::Run() {
 		renderer.RenderFrame();
 		now = SDL_GetPerformanceCounter();
 		deltaTime = (float)(now - last) * 1000 / performanceFrequency;
-		//std::cout << player.getWorldX() << " " << player.getWorldY() - 1 << " " << world.blockAt({player.getWorldX(), player.getWorldY() - 1}) << std::endl;
 		
 		last = now;
 	}

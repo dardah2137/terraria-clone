@@ -16,6 +16,7 @@ public:
 private:
 	void RenderBlocks();
 	void RenderPlayer();
+
 	Player* player{};
 	SDL_Rect centerPlayerPos;
 	SDL_Renderer* _pRenderer;
