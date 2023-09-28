@@ -20,6 +20,6 @@ private:
 	SDL_Rect centerPlayerPos;
 	SDL_Renderer* _pRenderer;
 	World* _pWorld;
-	std::map<Location, BLOCKTYPE>* _pBlocks{};
+	std::map<std::pair<int, int>, BLOCKTYPE>* _pBlocks{};
 	std::unordered_map<BLOCKTYPE, SDL_Texture*> _block_textures;
 };

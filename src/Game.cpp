@@ -17,7 +17,7 @@ void Game::LoadTextures() {
 	tmpoffset.h = 32;
 	tmpoffset.w = 32;
 
-	for (int i = 0; i != LAST; i++) {
+	for (int i = 1; i != LAST; i++) {
 		SDL_Texture* temp = SDL_CreateTexture(_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 32, 32);
 
 		SDL_SetRenderTarget(_renderer, temp);
@@ -67,23 +67,21 @@ void Game::Run() {
 
 	LoadTextures();
 	World world;
-	Player player(IMG_LoadTexture(_renderer, "assets/pudzion.png"));
+	Player player(IMG_LoadTexture(_renderer, "assets/pudzion.png"), 2, &world);
+	player.setPos(2, 4);
 	Renderer renderer(_renderer, &world, _block_textures, &player);
 
-	for (int i = -52; i <= 51; i++) {
-		if (i % 2 == 1) {
-			world.addBlock(Location{ i,0 }, GRASS, true);
-		}
-		else{ world.addBlock(Location{ i,0 }, LEAVES, true); }
-	}
-	
-	Uint64 now{};
-	Uint64 last{ SDL_GetPerformanceCounter() };
+	world.addBlock({ 0, 0 }, (BLOCKTYPE)2, true);
+	world.addBlock({ 2, -3 }, (BLOCKTYPE)1, true);
+
+	Uint64 now{ SDL_GetPerformanceCounter() };
+	Uint64 last{ now };
 	const Uint64 performanceFrequency = SDL_GetPerformanceFrequency();
 	float deltaTime{};
 
 	const Uint8* keystates = SDL_GetKeyboardState(NULL);
 	bool quit = false;
+
 	SDL_Event ev{};
 	//main game loop
 	while (!quit) {
@@ -97,15 +95,20 @@ void Game::Run() {
 			break;
 		}
 
-		if (keystates[SDL_SCANCODE_D]) { player.move(-0.5 * deltaTime, 0); }
-		if (keystates[SDL_SCANCODE_A]) { player.move(0.5 * deltaTime , 0); }
-		if (keystates[SDL_SCANCODE_W]) { player.move( 0, 0.5 * deltaTime); }
-		if (keystates[SDL_SCANCODE_S]) { player.move(0, -0.5 * deltaTime); }
+		if (keystates[SDL_SCANCODE_D]) {
+			if (!keystates[SDL_SCANCODE_A]) { player.apply_velocity(-0.15F * deltaTime, 0); }
+		} else if (keystates[SDL_SCANCODE_A]) { player.apply_velocity(0.15F * deltaTime, 0); }
+		if (world.blockAt( { player.getWorldX(), player.getWorldY() - 1 } )
+			&& keystates[SDL_SCANCODE_W]) { player.apply_velocity(0, 0.5F * deltaTime); }
+		if (keystates[SDL_SCANCODE_S]) { player.apply_velocity(0, -0.5F * deltaTime); }
+
+		player.tick_velocity();
 
 		renderer.RenderFrame();
 		now = SDL_GetPerformanceCounter();
 		deltaTime = (float)(now - last) * 1000 / performanceFrequency;
-		std::cout << (deltaTime * 0.001) << std::endl;
+		//std::cout << player.getWorldX() << " " << player.getWorldY() - 1 << " " << world.blockAt({player.getWorldX(), player.getWorldY() - 1}) << std::endl;
+		
 		last = now;
 	}
 }
