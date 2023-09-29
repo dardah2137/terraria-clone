@@ -2,9 +2,6 @@
 
 #include <iostream>
 
-const double SPEED_LIMIT = 5;
-const double X_VELOCITY_SLOWDOWN = 1.5F;
-
 Player::Player(SDL_Texture* sprite, double gravity, World* world)
 	: sprite(sprite),
 	_gravity(gravity),
@@ -21,12 +18,12 @@ void Player::applyVelocityX(double x)
 {
 	double vel_x_after = vel_x + x;
 
-	if (vel_x_after >= SPEED_LIMIT) {
-		this->vel_x = SPEED_LIMIT;
+	if (vel_x_after >= terminal_velocity_x) {
+		this->vel_x = terminal_velocity_x;
 		return;
 	}
-	else if (vel_x_after <= -SPEED_LIMIT) {
-		this->vel_x = -SPEED_LIMIT;
+	else if (vel_x_after <= -terminal_velocity_x) {
+		this->vel_x = -terminal_velocity_x;
 		return;
 	}
 	this->vel_x += x;

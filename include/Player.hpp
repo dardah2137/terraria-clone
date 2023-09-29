@@ -31,7 +31,9 @@ private:
 	void applyVelocityY(double y);
 	//enter as screen coordinates
 	bool checkCollisionAt(int x, int y);
+	const double terminal_velocity_x = 5.0;
 	const double terminal_velocity_y = 5.0;
+	const double X_VELOCITY_SLOWDOWN = 1.5;
 
 	World* _pWorld{};
 	double _gravity{};
