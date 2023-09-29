@@ -46,7 +46,6 @@ bool Player::checkCollisionAt(int x, int y)
 void Player::tick_velocity() {
 	handleVelX();
 	handleVelY();
-	//std::cout << vel_y << std::endl;
 }
 
 //isnt pixel based, automatically converts to world coordinates
@@ -101,7 +100,6 @@ void Player::handleVelY()
 	if (vel_y_positive) {
 		canJump = false;
 	}
-	std::cout << "SZIT!" << vel_y << std::endl;
 
 	if (!vel_y_positive && is_negative_y && checkCollisionAt(std::round(x/32), -std::floor((abs(y) / 32))-1)) {
 		canJump = true;

@@ -100,10 +100,8 @@ void Game::Run() {
 		} else if (keystates[SDL_SCANCODE_A]) { player.apply_velocity(0.25F * deltaTime, 0); }
 		if (player.canJump
 			&& keystates[SDL_SCANCODE_W]) {
-			//std::cout << deltaTime << std::endl;
 			  player.apply_velocity(0, 20);
 		}
-		//if (keystates[SDL_SCANCODE_S]) { player.apply_velocity(0, -0.5F * deltaTime); }
 		player.tick_velocity();
 
 		renderer.RenderFrame();
