@@ -21,7 +21,6 @@ std::map<std::pair<int, int>, BLOCKTYPE>* World::get_pBlocks()
 BLOCKTYPE World::blockAt(std::pair<int, int>  loc)
 {
 	if (_blocks.contains(loc)) {
-		std::cout << loc.first << " " << loc.second << std::endl;
 		return _blocks.find(loc)->second; 
 	}
 	return BLOCKTYPE(NULL);

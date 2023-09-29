@@ -2,39 +2,40 @@
 
 #include <iostream>
 
-const float SPEED_LIMIT = 5;
-const float X_VELOCITY_SLOWDOWN = 1.5F;
+const double SPEED_LIMIT = 5;
+const double X_VELOCITY_SLOWDOWN = 1.5F;
 
-Player::Player(SDL_Texture* sprite, float gravity, World* world)
+Player::Player(SDL_Texture* sprite, double gravity, World* world)
 	: sprite(sprite),
 	_gravity(gravity),
 	_pWorld(world)
 {
 }
 
-void Player::apply_velocity(float x, float y) {
+void Player::apply_velocity(double x, double y) {
 	applyVelocityX(x);
 	applyVelocityY(y);
 };
 
-void Player::applyVelocityX(float x)
+void Player::applyVelocityX(double x)
 {
-	float vel_x_after = vel_x + x;
+	double vel_x_after = vel_x + x;
 
 	if (vel_x_after >= SPEED_LIMIT) {
 		this->vel_x = SPEED_LIMIT;
+		return;
 	}
 	else if (vel_x_after <= -SPEED_LIMIT) {
 		this->vel_x = -SPEED_LIMIT;
+		return;
 	}
-	else {
-		this->vel_x += x;
-	}
+	this->vel_x += x;
+	return;
 }
 
-void Player::applyVelocityY(float y) 
+void Player::applyVelocityY(double y)
 {
-	vel_y += y * _gravity;
+	vel_y += y;
 }
 
 bool Player::checkCollisionAt(int x, int y)
@@ -48,17 +49,18 @@ bool Player::checkCollisionAt(int x, int y)
 void Player::tick_velocity() {
 	handleVelX();
 	handleVelY();
+	//std::cout << vel_y << std::endl;
 }
 
 //isnt pixel based, automatically converts to world coordinates
-void Player::setPos(float x, float y)
+void Player::setPos(double x, double y)
 {
 	this->x = x*32; this->y = y*32;
 }
 
-float Player::getX() { return x; }
+double Player::getX() { return x; }
 
-float Player::getY() { return y; }
+double Player::getY() { return y; }
 
 int Player::getWorldX() { return x/32; }
 
@@ -88,16 +90,32 @@ void Player::handleVelX()
 void Player::handleVelY()
 {
 	int moduloY = (int)y % 32;
-	int moduloX = (int)x % 32;
-	if (moduloY % 32 == 0) {
-		if (checkCollisionAt(std::ceil(x) / 32, (y - 32) / 32))
-		{
-			return;
-		}
-		if (checkCollisionAt(std::floor(x+32) / 32, (y - 32) / 32)) {
-			return;
+	vel_y -= _gravity;
+	if (vel_y <= _gravity) {
+		if (vel_y >= terminal_velocity_y) { vel_y = terminal_velocity_y; }
+		else {
+			vel_y += (double)(1 / 2) * (-_gravity);
 		}
 	}
-	y -= _gravity;
+	double y_after = y - vel_y;
+	bool is_negative_y = y_after < 0;
+	bool is_negative_x = false;
+	bool vel_y_positive = vel_y > 0;
+	if (vel_y_positive) {
+		canJump = false;
+	}
+	std::cout << "SZIT!" << vel_y << std::endl;
+
+	if (!vel_y_positive && is_negative_y && checkCollisionAt(std::round(x/32), -std::floor((abs(y) / 32))-1)) {
+		canJump = true;
+		vel_y = 0;
+	}
+	else if(!vel_y_positive && checkCollisionAt (std::round(x / 32), std::floor(y / 32)) ) {
+		canJump = true;
+		std::cout << std::round(x / 32) << " " << std::floor(y_after / 32) - 1 << std::endl;
+		vel_y = 0;
+	}
+	y += vel_y;
 }
+
 

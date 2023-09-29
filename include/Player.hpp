@@ -13,26 +13,28 @@ enum DIRECTION {
 
 class Player {
 public:
-	Player(SDL_Texture* sprite, float gravity, World* world);
-	void apply_velocity(float x, float y);
+	Player(SDL_Texture* sprite, double gravity, World* world);
+	void apply_velocity(double x, double y);
 	void tick_velocity();
 
-	void setPos(float x, float y);
-	float getX();
-	float getY();
+	void setPos(double x, double y);
+	double getX();
+	double getY();
 	int getWorldX();
 	int getWorldY();
+	bool canJump;
 	SDL_Texture* sprite;
 private:
 	void handleVelY();
 	void handleVelX();
-	void applyVelocityX(float x);
-	void applyVelocityY(float y);
+	void applyVelocityX(double x);
+	void applyVelocityY(double y);
 	//enter as screen coordinates
 	bool checkCollisionAt(int x, int y);
+	const double terminal_velocity_y = 5.0;
 
 	World* _pWorld{};
-	float _gravity{};
-	float x{}, y{1};
-	float vel_x{}, vel_y{};
+	double _gravity{};
+	double x{}, y{1};
+	double vel_x{}, vel_y{};
 };

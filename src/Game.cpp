@@ -67,12 +67,12 @@ void Game::Run() {
 
 	LoadTextures();
 	World world;
-	Player player(IMG_LoadTexture(_renderer, "assets/pudzion.png"), 2, &world);
-	player.setPos(2, 4);
+	Player player(IMG_LoadTexture(_renderer, "assets/pudzion.png"), 1, &world);
+	player.setPos(2, 7);
 	Renderer renderer(_renderer, &world, _block_textures, &player);
-
-	world.addBlock({ 0, 0 }, (BLOCKTYPE)2, true);
-	world.addBlock({ 2, -3 }, (BLOCKTYPE)1, true);
+	for (int i = -20; i < 21; i++) {
+		world.addBlock({ i, 3 }, (BLOCKTYPE)2, true);
+	}
 
 	Uint64 now{ SDL_GetPerformanceCounter() };
 	Uint64 last{ now };
@@ -96,12 +96,14 @@ void Game::Run() {
 		}
 
 		if (keystates[SDL_SCANCODE_D]) {
-			if (!keystates[SDL_SCANCODE_A]) { player.apply_velocity(-0.15F * deltaTime, 0); }
-		} else if (keystates[SDL_SCANCODE_A]) { player.apply_velocity(0.15F * deltaTime, 0); }
-		if (world.blockAt( { player.getWorldX(), player.getWorldY() - 1 } )
-			&& keystates[SDL_SCANCODE_W]) { player.apply_velocity(0, 0.5F * deltaTime); }
-		if (keystates[SDL_SCANCODE_S]) { player.apply_velocity(0, -0.5F * deltaTime); }
-
+			if (!keystates[SDL_SCANCODE_A]) { player.apply_velocity(-0.25F * deltaTime, 0); }
+		} else if (keystates[SDL_SCANCODE_A]) { player.apply_velocity(0.25F * deltaTime, 0); }
+		if (player.canJump
+			&& keystates[SDL_SCANCODE_W]) {
+			//std::cout << deltaTime << std::endl;
+			  player.apply_velocity(0, 20);
+		}
+		//if (keystates[SDL_SCANCODE_S]) { player.apply_velocity(0, -0.5F * deltaTime); }
 		player.tick_velocity();
 
 		renderer.RenderFrame();
